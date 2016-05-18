@@ -20154,21 +20154,13 @@
 
 	var React = __webpack_require__(1);
 	var Search = __webpack_require__(169);
-	var ExerciseList = __webpack_require__(170);
-	var ExerciseDetail = __webpack_require__(172);
+	var DetailPanel = __webpack_require__(170);
+	var ExerciseList = __webpack_require__(171);
+	var ExerciseDetail = __webpack_require__(174);
 
 	module.exports = React.createClass({displayName: "module.exports",
 	  getInitialState:function() {
-	    var exs = this.props.data.map(function(ex){
-	      ex.visible = true;
-	      return ex;
-	    });
-	    
-	    exs = exs.sort(this.sortByName);
-	    
 	    return {
-	      search: "",
-	      exercises: exs,
 	      detail : {}
 	    };
 	  },
@@ -20176,35 +20168,16 @@
 	    return (
 	      React.createElement("div", {className: "col-xs-12"}, 
 	        React.createElement("div", {className: "row"}, 
-	          React.createElement(ExerciseList, {exercises: this.state.exercises, search: this.state.search, changeSearch: this.changeSearch, exerciseDetail: this.exerciseDetail}), 
-	          React.createElement(ExerciseDetail, {exercise: this.state.detail})
+	          React.createElement(ExerciseList, {exercises: this.props.data, exerciseDetail: this.exerciseDetail}), 
+	          React.createElement(DetailPanel, null, 
+	            React.createElement(ExerciseDetail, {exercise: this.state.detail, visible: true})
+	          )
 	        )
 	      )
 	    );
 	  },
-	  changeSearch:function(event) {
-	    var text = event.target.value;
-	    
-	    var exs = this.state.exercises.map(function(e){
-	        (e.name.toLowerCase().indexOf(text.toLowerCase())==-1) ? e.visible = false : e.visible = true;
-	        return e;
-	    });
-	    
-	    this.setState({
-	      search: text,
-	      exercises: exs
-	    });
-	  },
 	  exerciseDetail:function(exercise) {
 	    this.setState({detail: exercise});
-	  },
-	  sortByName:function(a, b) {
-	    if (a.name < b.name)
-	      return -1;
-	    else if (a.name > b.name)
-	      return 1;
-	    else 
-	      return 0;
 	  }
 	});
 
@@ -20220,8 +20193,8 @@
 	    return (
 	      React.createElement("div", {className: "search-component"}, 
 	        React.createElement("div", {className: "input-group"}, 
-	          React.createElement("span", {className: "input-group-addon", id: "basic-addon1"}, React.createElement("span", {className: "glyphicon glyphicon-search", "aria-hidden": "true"})), 
-	          React.createElement("input", {onChange: this.props.changeSearch, type: "text", className: "form-control", placeholder: "Search"})
+	          React.createElement("span", {className: "input-group-addon border-radius-1", id: "basic-addon1"}, React.createElement("span", {className: "glyphicon glyphicon-search", "aria-hidden": "true"})), 
+	          React.createElement("input", {onChange: this.props.changeSearch, type: "text", className: "form-control border-radius-1", placeholder: "Search"})
 	        )
 	      )
 	    );
@@ -20235,20 +20208,12 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var Search = __webpack_require__(169);
-	var ExerciseRow = __webpack_require__(171);
 
 	module.exports = React.createClass({displayName: "module.exports",
 	  render:function() {
-	    var ed = this.props.exerciseDetail;
-	    var exerciseRows = this.props.exercises.map(function(e){
-	        return React.createElement(ExerciseRow, {exercise: e, exerciseDetail: ed})
-	    });
-	  
 	    return (
-	      React.createElement("div", {className: "exercise-search col-xs-12 col-sm-6"}, 
-	        React.createElement(Search, {search: this.props.search, changeSearch: this.props.changeSearch}), 
-	        exerciseRows
+	      React.createElement("div", {id: "detail-panel", className: "col-xs-12 col-sm-6 hidden-xs"}, 
+	        this.props.children
 	      )
 	    );
 	  }
@@ -20262,29 +20227,163 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
+	var Search = __webpack_require__(169);
+	var ExerciseRow = __webpack_require__(172);
 
 	module.exports = React.createClass({displayName: "module.exports",
-	  getInitialState: function() {
+	  getInitialState:function() {
+	    var exs = this.props.exercises.map(function(e){
+	      e.visible = true;
+	      return e;
+	    });
+	    
+	    exs = exs.sort(this.sortByName);
+	  
 	    return {
-	      detail: this.props.exercise
+	      exercises: exs,
+	      search: ""
 	    }
 	  },
 	  render:function() {
+	    var ed = this.props.exerciseDetail;
+	    var ad = this.props.addExercise;
+	    
+	    var exerciseRows = this.state.exercises.map(function(e){
+	        return React.createElement(ExerciseRow, {exercise: e, exerciseDetail: ed, addExercise: ad})
+	    });
+	  
 	    return (
-	      React.createElement("button", {style: this.state.detail.visible ? {display:'inherit'} : {display:'none'}, type: "button", className: "btn btn-styled exerciseRow", onClick: this.setDetailExercise}, 
-	        this.state.detail.name
+	      React.createElement("div", {id: "exercise-search", className: "exercise-search col-xs-12 col-sm-6"}, 
+	        React.createElement(Search, {search: this.state.search, changeSearch: this.changeSearch}), 
+	        exerciseRows
 	      )
 	    );
 	  },
-	  setDetailExercise:function(event){
+	  sortByName:function(a, b) {
+	    if (a.name < b.name)
+	      return -1;
+	    else if (a.name > b.name)
+	      return 1;
+	    else 
+	      return 0;
+	  },
+	  changeSearch:function(event) {
+	    var text = event.target.value;
+	    
+	    var exs = this.state.exercises.map(function(e){
+	        (e.name.toLowerCase().indexOf(text.toLowerCase())==-1) ? e.visible = false : e.visible = true;
+	        return e;
+	    });
+	    
+	    this.setState({
+	      search: text,
+	      exercises: exs
+	    });
+	  }
+	});
+
+
+
+
+/***/ },
+/* 172 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var classNames = __webpack_require__(173);
+
+	module.exports = React.createClass({displayName: "module.exports",
+	  addExerciseToWorkoutList:function(event){
 	    event.preventDefault();
-	    this.props.exerciseDetail(this.state.detail)
+	    this.props.addExercise(this.state.exercise)
+	  },
+	  
+	  getInitialState: function() {
+	    return {
+	      exercise: this.props.exercise
+	    }
+	  },
+	  
+	  render:function() {
+	    var addbutton = (this.props.addExercise) ? React.createElement("button", {type: "button", className: "btn btn-styled exerciseRowAddToWorkoutList border-radius-1", onClick: this.addExerciseToWorkoutList}, "+") : null;
+	    
+	    buttonClasses = classNames("btn", "btn-styled", "exerciseRowDetail", "border-radius-1", {"full-width": addbutton ? false : true } )
+	  
+	    return (
+	      React.createElement("div", {style: this.state.exercise.visible ? {display:'inline-block'} : {display:'none'}, className: "btn-group exerciseRow", role: "group"}, 
+	        React.createElement("button", {type: "button", className: buttonClasses, onClick: this.setDetailExercise}, 
+	          this.state.exercise.name
+	        ), 
+	        addbutton
+	      )
+	    );
+	  },
+	  
+	  setDetailExercise:function(event){
+	    event.preventDefault()
+	    document.getElementById("exercise-search").classList.add("hidden-xs")
+	    document.getElementById("detail-panel").classList.remove("hidden-xs")
+	    this.props.exerciseDetail(this.state.exercise)
 	  }
 	});
 
 
 /***/ },
-/* 172 */
+/* 173 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+	  Copyright (c) 2016 Jed Watson.
+	  Licensed under the MIT License (MIT), see
+	  http://jedwatson.github.io/classnames
+	*/
+	/* global define */
+
+	(function () {
+		'use strict';
+
+		var hasOwn = {}.hasOwnProperty;
+
+		function classNames () {
+			var classes = [];
+
+			for (var i = 0; i < arguments.length; i++) {
+				var arg = arguments[i];
+				if (!arg) continue;
+
+				var argType = typeof arg;
+
+				if (argType === 'string' || argType === 'number') {
+					classes.push(arg);
+				} else if (Array.isArray(arg)) {
+					classes.push(classNames.apply(null, arg));
+				} else if (argType === 'object') {
+					for (var key in arg) {
+						if (hasOwn.call(arg, key) && arg[key]) {
+							classes.push(key);
+						}
+					}
+				}
+			}
+
+			return classes.join(' ');
+		}
+
+		if (typeof module !== 'undefined' && module.exports) {
+			module.exports = classNames;
+		} else if (true) {
+			// register as 'classnames', consistent with npm package name
+			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
+				return classNames;
+			}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+		} else {
+			window.classNames = classNames;
+		}
+	}());
+
+
+/***/ },
+/* 174 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -20295,14 +20394,16 @@
 	    if(this.props.exercise.name){
 	      ret =  [
 	        React.createElement("h3", null, this.props.exercise.name),
-	        React.createElement("div", null, "It is impossible to be a maverick or a true original if you're too well behaved and don't want to break the rules. You have to think outside the box. That's what I believe. After all, what is the point of being on this earth if all you want to do is be liked by everyone and avoid trouble?It is impossible to be a maverick or a true original if you're too well behaved and don't want to break the rules. You have to think outside the box. That's what I believe. After all, what is the point of being on this earth if all you want to do is be liked by everyone and avoid trouble?It is impossible to be a maverick or a true original if you're too well behaved and don't want to break the rules. You have to think outside the box. That's what I believe. After all, what is the point of being on this earth if all you want to do is be liked by everyone and avoid trouble?It is impossible to be a maverick or a true original if you're too well behaved and don't want to break the rules. You have to think outside the box. That's what I believe. After all, what is the point of being on this earth if all you want to do is be liked by everyone and avoid trouble?It is impossible to be a maverick or a true original if you're too well behaved and don't want to break the rules. You have to think outside the box. That's what I believe. After all, what is the point of being on this earth if all you want to do is be liked by everyone and avoid trouble?It is impossible to be a maverick or a true original if you're too well behaved and don't want to break the rules. You have to think outside the box. That's what I believe. After all, what is the point of being on this earth if all you want to do is be liked by everyone and avoid trouble?It is impossible to be a maverick or a true original if you're too well behaved and don't want to break the rules. You have to think outside the box. That's what I believe. After all, what is the point of being on this earth if all you want to do is be liked by everyone and avoid trouble?It is impossible to be a maverick or a true original if you're too well behaved and don't want to break the rules. You have to think outside the box. That's what I believe. After all, what is the point of being on this earth if all you want to do is be liked by everyone and avoid trouble?It is impossible to be a maverick or a true original if you're too well behaved and don't want to break the rules. You have to think outside the box. That's what I believe. After all, what is the point of being on this earth if all you want to do is be liked by everyone and avoid trouble?")
+	        React.createElement("iframe", {width: "100%", height: "315", src: "https://www.youtube.com/embed/YCg1YxMt3oY", frameborder: "0", allowfullscreen: true}),
+	        React.createElement("div", null, "tags: arms, back"),
+	        React.createElement("div", {class: "exercise-detail-descrition"}, "It is impossible to be a maverick or a true original if you're too well behaved and don't want to break the rules. You have to think outside the box. That's what I believe. After all, what is the point of being on this earth if all you want to do is be liked by everyone and avoid trouble?It is impossible to be a maverick or a true original if you're too well behaved and don't want to break the rules. You have to think outside the box. That's what I believe. After all, what is the point of being on this earth if all you want to do is be liked by everyone and avoid trouble?It is impossible to be a maverick or a true original if you're too well behaved and don't want to break the rules. You have to think outside the box. That's what I believe. After all, what is the point of being on this earth if all you want to do is be liked by everyone and avoid trouble?It is impossible to be a maverick or a true original if you're too well behaved and don't want to break the rules. You have to think outside the box. That's what I believe. After all, what is the point of being on this earth if all you want to do is be liked by everyone and avoid trouble?")
 	      ];
 	    }else{
 	      ret = React.createElement("h3", null, "Select the exercise that you are interested in!");
 	    }
 	  
 	    return (
-	      React.createElement("div", {className: "exercise-detail-box col-xs-12 col-sm-6"}, 
+	      React.createElement("div", null, 
 	        ret
 	      )
 	    );

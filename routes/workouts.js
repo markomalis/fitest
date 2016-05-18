@@ -9,7 +9,7 @@ var jsx = require("node-jsx").install({
   harmony: true,
   extension: ".jsx"
 });
-App = React.createFactory(require("../components/exerciseApp"));
+App = React.createFactory(require("../components/workoutApp"));
 
 var su_name = "Marko";
 
@@ -36,6 +36,27 @@ router.route('/')
             });
         });
     });
+
+router.route('/app')
+    .get(function(req,res,next) {
+        exerciseLibrary.findOne({user: su_name}, function(err, lib) {
+            if (err) throw err;
+            var initialData = lib.exercises;
+            var html = ReactDOMServer.renderToString(App({ data: initialData }));
+            
+            res.render('index', 
+                { 
+                    html: html , 
+                    initialState: JSON.stringify(initialData),
+                    js: "workout" 
+                }
+            );
+        });
+    })
+    
+    .post(function(req,res,next){
+        res.json([{"test":"testPOST", "body":req.body.yolo}]);
+    })   
     
 router.route('/lib/:user_id')
     //get all exercises from exerciseLib of specified user
@@ -64,36 +85,5 @@ router.route('/lib/:user_id')
             });
         });
     });
-    
-router.route('/test')
-    .get(function(req,res,next){
-        res.json([{"test":"testGET"}]);
-    })
-    
-    .post(function(req,res,next){
-        res.json([{"test":"testPOST", "body":req.body.yolo}]);
-    })    
-
-
-router.route('/app')
-    .get(function(req,res,next) {
-        exerciseLibrary.findOne({user: su_name}, function(err, lib) {
-            if (err) throw err;
-            var initialData = lib.exercises;
-            var html = ReactDOMServer.renderToString(App({ data: initialData }));
-            
-            res.render('index', 
-                { 
-                    html: html , 
-                    initialState: JSON.stringify(initialData),
-                    js: "exercise"
-                }
-            );
-        });
-    })
-    
-    .post(function(req,res,next){
-        res.json([{"test":"testPOST", "body":req.body.yolo}]);
-    })    
 
 module.exports = router;

@@ -2,7 +2,7 @@ var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
-var mustacheExpress = require('mustache-express')
+var cons = require('consolidate');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
@@ -19,12 +19,14 @@ db.once('open', function () {
 var exerciseRouter = require('./routes/exercises');
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var workoutRouter = require('./routes/workouts');
 
 var app = express();
 
 // view engine setup
+app.set('view engine', 'html'); 
+app.engine('.html', cons.handlebars);
 app.set('views', path.join(__dirname, 'views'));
-app.engine('html', mustacheExpress()); 
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -39,6 +41,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/users', users);
 app.use('/exercises', exerciseRouter);
+app.use('/workouts', workoutRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

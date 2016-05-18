@@ -1,8 +1,216 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+@import url(https://fonts.googleapis.com/css?family=Titillium+Web);
+
+@font-face {
+  font-family: Baron;
+  src: url("../fonts/BaronNeue.otf") format("opentype");
 }
 
-a {
-  color: #00B7FF;
+html{
+    min-height:100%;/* make sure it is at least as tall as the viewport */
+    position:relative;
+}
+body{
+    height:100%; /* force the BODY element to match the height of the HTML element */
+}
+
+body {
+  font: 19px 'Titillium Web', sans-serif;
+}
+
+.blur{
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  opacity:0;
+  z-index: 99;
+  position: absolute;
+  top: 157px;
+  left:0;
+  display: none;
+}
+
+.main-header, .sidemenu-header{
+  font: 14px "Baron", Helvetica, Arial, sans-serif;
+  text-align: center;
+}
+
+.menu-nav{
+  background-color: #000;
+  padding: 5px 15px;
+  margin-bottom: 10px;
+  border-top: 1px solid;
+}
+  .menu-nav > img{
+    cursor: pointer;
+  }
+.tag {
+  background: #eee;
+  border-radius: 3px 0 0 3px;
+  color: #999;
+  display: inline-block;
+  height: 26px;
+  line-height: 26px;
+  padding: 0 20px 0 23px;
+  position: relative;
+  margin: 8px 10px 8px 0;
+  text-decoration: none;
+  -webkit-transition: color 0.2s;
+}
+
+.tag::before {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: inset 0 1px rgba(0, 0, 0, 0.25);
+  content: '';
+  height: 6px;
+  left: 10px;
+  position: absolute;
+  width: 6px;
+  top: 10px;
+}
+
+.tag::after {
+  background: #fff;
+  border-bottom: 13px solid transparent;
+  border-left: 10px solid #eee;
+  border-top: 13px solid transparent;
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.tag:hover {
+  background-color: crimson;
+  color: white;
+}
+
+.tag:hover::after {
+   border-left-color: crimson; 
+}
+
+.red{
+  color: crimson;
+}
+.green{
+  color: #45a163;
+}
+.yellow{
+  color: yellow;
+}
+.exerciseRow{
+  width: 100%;
+  margin-bottom: 5px;
+  border-radius: 1px;
+  float: none !important;
+}
+#page-nav-container{
+  position: relative;
+  top: 0;
+  left: 0;
+}
+
+#sidemenu{
+  z-index: 100;
+  width: 0;
+  height: 100%;
+  position: absolute;
+  top: 157px;
+  left: 0;
+  background-color: #000;
+  opacity: 0.9;
+  overflow: hidden;
+}
+  .sidemenu-header{
+    font-size: 24px;
+    padding-top: 20px;
+  }
+
+#sidemenu-navs{
+  list-style-type: none;
+  padding: 0;
+  margin-top: 50px;
+}
+  .sidemenu-nav{
+    padding: 11px 0px;
+    text-align: center;
+  }
+  .sidemenu-nav:hover, .sidemenu-nav:focus {
+    border-bottom: 1px solid;
+    box-shadow: 0px 1px 1px #fff;
+  }
+  
+  .sidemenu-nav > a{
+    color: #FFF;
+  }
+
+.btn-styled{
+  background-color: #5fba7d;
+  border-color: #45a163;
+  font-size: 20px;
+  color: #FFF;
+}
+
+.btn-styled:hover, .btn-styled:active, .btn-styled:focus{
+  background-color: #45a163;
+  border-color: #45a163;
+  color:#fff;
+}
+
+.search-component{
+  margin-bottom: 15px;
+}
+.search-component > div > input{
+  height: 49px;
+}
+
+.exerciseRowAddToWorkoutList{
+  width: 15%;
+}
+
+.exerciseRowDetail{
+  width: 85%;
+}
+
+.workoutList{
+  margin-top: 15px;
+}
+.workoutEntry{
+  margin-bottom: 5px;
+}
+
+.workoutEntryButton{
+  text-align: center;
+  padding: 5px 0px;
+  background-color: #5fba7d;
+  border-color: #45a163;
+  line-height: 32px;
+  margin-top: 5px;
+  overflow: auto;
+}
+.workoutEntryToggle{
+  display:  none;
+  height: 32px;
+}
+
+.workoutEntryButton:hover .workoutEntryToggle{
+  display: inline !important;
+}
+
+.high-input{
+  height: 42px;
+  margin-bottom: 5px;
+}
+
+.workoutEntrySets{
+  overflow: hidden;
+  height: 0;
+}
+
+.border-radius-1{
+  border-radius: 1px;
+}
+
+.full-width{
+  width: 100% !important;
 }
