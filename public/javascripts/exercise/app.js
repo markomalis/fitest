@@ -1,11 +1,26 @@
-var React = require("react");
-var ReactDOM = require("react-dom");
-App = React.createFactory(require("../../../components/exerciseApp"));
+import React from 'react'
+import { render } from 'react-dom'
+import { Provider } from 'react-redux'
+import { createStore } from 'redux'
+import App from "../../../components/exerciseApp"
 
 const initialState = window.__INITIAL_STATE__;
 
+let store = createStore(todoApp, 
+  {
+    detail: -1,
+    exercises: initialState,
+    visiblePanel: "list"
+  }
+)
+
 if (typeof window !== "undefined") {
   window.onload = function() {
-    ReactDOM.render(App({ data: initialState }), document.getElementById("content"));
+    render(
+      <Provider store={store}>
+        <App />
+      </Provider>,
+      document.getElementById("content")
+    );
   };
 }

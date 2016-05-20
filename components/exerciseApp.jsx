@@ -1,28 +1,16 @@
 var React = require("react");
-var Search = require("./search");
-var DetailPanel = require("./detailPanel");
-var ExerciseList = require("./exerciseSearchList");
-var ExerciseDetail = require("./exerciseDetail");
+import ExerciseDetail from '../containers/ExerciseDetail'
+import ExerciseSearch from '../containers/ExerciseSearch'
 
 module.exports = React.createClass({
-  getInitialState() {
-    return {
-      detail : {}
-    };
-  },
   render() {
     return (
       <div className="col-xs-12">
         <div className="row">
-          <ExerciseList exercises={this.props.data} exerciseDetail={this.exerciseDetail} />
-          <DetailPanel>
-            <ExerciseDetail exercise={this.state.detail} visible={true} />
-          </DetailPanel>
+          <ExerciseSearch />
+          <ExerciseDetail />
         </div>
       </div>
     );
-  },
-  exerciseDetail(exercise) {
-    this.setState({detail: exercise});
   }
 });
